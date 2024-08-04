@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="PYTHON_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.venv" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/20210724" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/20230114" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/20230205" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/20230209" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/20230406" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/20230502" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/Audio" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/Banner" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/Button" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/Share" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/Skill" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/World" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/不要惊醒奈奥格" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/同调者生日日历" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/怪物出现方位" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/格兰索历险记" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/烙痕技能" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/玩家头像" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/百里屠苏" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/背景图片" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/苍蓝的达加兹" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/规则机制攻略" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/视频封面" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/角色介绍" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/记忆烙痕" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/词条百科" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/雪中春信" />
+      <excludeFolder url="file://$MODULE_DIR$/data/images/首页轮播图" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
