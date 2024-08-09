@@ -1,11 +1,10 @@
 import json
 import os
-import time
 
 from mwclient import Site
 
-from bjhl_scraper.utils import translate_character
-from bjhl_scraper.utils import progressbar
+from utils import translate_character
+
 
 wiki = Site("wiki.biligame.com/bjhl", path="/")
 

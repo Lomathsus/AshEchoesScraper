@@ -1,6 +1,6 @@
 import re
 
-key_mapping = {
+base_dict = {
     "姓名": "cn_name",
     "英文名": "en_name",
     "日文名": "jp_name",
@@ -350,6 +350,6 @@ def translate_character(origin_dict):
         elif match := re.match(seed_data_regs, key):
             translate_seed_data(match, item, translated_dict)
 
-        elif english_attribute := key_mapping.get(key, key):
+        elif english_attribute := base_dict.get(key, key):
             translated_dict[english_attribute] = value
     return translated_dict
