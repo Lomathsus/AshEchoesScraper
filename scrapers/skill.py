@@ -3,8 +3,13 @@ import os
 from mwclient import Site
 
 wiki = Site("wiki.biligame.com/bjhl", path="/")
-# result = wiki.allcategories()
-# result = wiki.categories["同调者"]
+
+skills = wiki.categories["刻印技能"]
+
+count = 0
+for skill in skills:
+    count += 1
+    print(count, skill.name)
 
 # page = wiki.pages["同调者/莫红袖"]
 # lines = page.text().split("\n")

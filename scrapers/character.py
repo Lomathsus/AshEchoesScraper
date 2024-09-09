@@ -51,5 +51,5 @@ def download_characters():
     list(map(download_character_json, character_list))
 
 
-download_characters()
-# download_character_json("同调者/莫红袖")
+# download_characters()
+download_character_json("同调者/Sweeper-EX")

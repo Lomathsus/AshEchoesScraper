@@ -21,18 +21,18 @@ base_dict = {
 }
 
 attribute_dict = {
-    "体质": "constitution",
+    "体质": "health",
     "防御": "defence",
     "攻击": "attack",
-    "专精": "specialisation",
+    "专精": "mastery",
     "终端": "terminal",
 }
 
 training_dict = {
-    "体质": "constitution",
+    "体质": "health",
     "防御": "defence",
     "攻击": "attack",
-    "专精": "specialisation",
+    "专精": "mastery",
     "终端": "terminal",
     "攻击速度": "attack_speed",
     "治愈力": "healing",
@@ -135,16 +135,13 @@ def translate_captain_attribute(match, item, target):
 
 
 # 专精影响分支
-def translate_specialisation_effect(match, item, target):
+def translate_mastery_effect(match, item, target):
     key, value = item
     attribute = extra_attribute_dict[match.group(2)]
-    target.setdefault("specialisation_effect", {})[attribute] = value
+    target.setdefault("mastery_effect", {})[attribute] = value
 
 
 # 技能
-import re
-
-
 def translate_skill(match, item, target):
     key, value = item
 
@@ -332,7 +329,7 @@ def translate_character(origin_dict):
         elif match := re.match(r"(技能|异核)(\d+)?(" + skill_regs + ")(.*)", key):
             translate_skill(match, item, translated_dict)
         elif match := re.match(r"(专精影响分支-)(.+)", key):
-            translate_specialisation_effect(match, item, translated_dict)
+            translate_mastery_effect(match, item, translated_dict)
         elif match := re.match(r"记忆档案(\d+)-(内容|名称)", key):
             translate_document(match, item, translated_dict)
         elif match := re.match(r"(装备-)(.+)", key):
@@ -353,3 +350,6 @@ def translate_character(origin_dict):
         elif english_attribute := base_dict.get(key, key):
             translated_dict[english_attribute] = value
     return translated_dict
+
+
+__all__ = ["translate_character"]
