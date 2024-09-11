@@ -59,7 +59,7 @@ def image_save(image):
 def image_download():
     image_list = image_check()
     for image in tqdm(image_list, disable=not len(image_list)):
-        tqdm.set_postfix(image.name[3:])
+        # tqdm.set_postfix(image.name[3:])
         image_save(image)
 
 

@@ -10,22 +10,6 @@ base_dict = {
     "实装日期": "implemented_at",
     "获取途径": "acquisition",
     "烙痕介绍": "description",
-    # "特质LV1": "{{颜色烙痕蓝高维同调}}处，获取{{颜色烙痕蓝防御}}到达10次时，可获得{{颜色烙痕蓝攻击}}{{颜色烙痕黄20}}点<br>本烙痕完成一次{{颜色烙痕蓝记忆强化}}，有{{颜色烙痕黄30%}}几率获得40点{{颜色烙痕蓝专精}}",
-    # "特质LV2": "{{颜色烙痕蓝高维同调}}处，获取{{颜色烙痕蓝防御}}到达10次时，可获得{{颜色烙痕蓝攻击}}{{颜色烙痕黄25}}点<br>本烙痕完成一次{{颜色烙痕蓝记忆强化}}，有{{颜色烙痕黄50%}}几率获得40点{{颜色烙痕蓝专精}}",
-    # "特质LV3": "{{颜色烙痕蓝高维同调}}处，获取{{颜色烙痕蓝防御}}到达10次时，可获得{{颜色烙痕蓝攻击}}{{颜色烙痕黄30}}点<br>本烙痕完成一次{{颜色烙痕蓝记忆强化}}，有{{颜色烙痕黄60%}}几率获得40点{{颜色烙痕蓝专精}}",
-    # "特质LV4": "{{颜色烙痕蓝高维同调}}处，获取{{颜色烙痕蓝防御}}到达10次时，可获得{{颜色烙痕蓝攻击}}{{颜色烙痕黄40}}点<br>本烙痕完成一次{{颜色烙痕蓝记忆强化}}，有{{颜色烙痕黄60%}}几率获得40点{{颜色烙痕蓝专精}}",
-    # "特质LV5": "{{颜色烙痕蓝高维同调}}处，获取{{颜色烙痕蓝防御}}到达10次时，可获得{{颜色烙痕蓝攻击}}{{颜色烙痕黄40}}点<br>本烙痕完成一次{{颜色烙痕蓝记忆强化}}，有{{颜色烙痕黄70%}}几率获得40点{{颜色烙痕蓝专精}}",
-    # "特质LV6": "{{颜色烙痕蓝高维同调}}处，获取{{颜色烙痕蓝防御}}到达10次时，可获得{{颜色烙痕蓝攻击}}{{颜色烙痕黄50}}点<br>本烙痕完成一次{{颜色烙痕蓝记忆强化}}，有{{颜色烙痕黄75%}}几率获得40点{{颜色烙痕蓝专精}}<br>在首个{{颜色烙痕蓝烙痕唤醒点}}，可直接解锁{{颜色烙痕黄核心技能的2级}}",
-    # "II-A-1": "技能点+50",
-    # "II-A-2": "防御+10~20",
-    # "II-B-1": "攻击+5~15",
-    # "II-B-2": "专精+30",
-    # "IV-A-1": "攻击+10~20",
-    # "IV-A-2": "技能点+40",
-    # "IV-B-1": "技能点+40",
-    # "IV-B-2": "专精+10~20",
-    # "烙痕立绘1": "",
-    # "烙痕立绘2": "",
 }
 
 attribute_dict = {
@@ -101,6 +85,22 @@ def translate_trait(match, item, target):
     target["trait"][level] = value
 
 
+def translate_illustration(match, item, target):
+    key, value = item
+    num = match.group(1)
+    target.setdefault("illustration", {})
+    target["illustration"][num] = value
+
+
+def translate_mark_wakeup(match, item, target):
+    key, value = item
+    wakeup_stage = 2 if match.group(1) == "II" else 4
+    wakeup_option = 0 if match.group(2) == "A" else 1
+    target.setdefault("mark_wakeup", {})
+    target["mark_wakeup"].setdefault(wakeup_stage, [[], []])
+    target["mark_wakeup"][wakeup_stage][wakeup_option].append(value)
+
+
 def translate_inner_mark(origin_dict):
     translated_dict = {}
 
@@ -114,6 +114,11 @@ def translate_inner_mark(origin_dict):
             translate_content(match, item, translated_dict)
         elif match := re.match(r"^特质([Ll][Vv]\d+)", key):
             translate_trait(match, item, translated_dict)
+        elif match := re.match(r"^烙痕立绘(\d+)", key):
+            translate_illustration(match, item, translated_dict)
+        elif match := re.match(r"^(II|IV)-(A|B)-(\d+)", key):
+            translate_mark_wakeup(match, item, translated_dict)
+
         elif english_attribute := base_dict.get(key, key):
             translated_dict[english_attribute] = value
     return translated_dict
