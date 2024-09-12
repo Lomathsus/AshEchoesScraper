@@ -17,7 +17,7 @@ DOWNLOAD_FILE_PATH = "../data/inner_marks"
 
 def download_inner_mark_json(inner_mark):
     page = wiki.pages[inner_mark]
-
+    print(inner_mark)
     lines = page.text().split("\n")
 
     dictionary = {}
@@ -49,29 +49,15 @@ def download_inner_mark_json(inner_mark):
     #     print(image.name)
 
 
-download_inner_mark_json("记忆烙痕/如在镜中")
-
-# def download_inner_marks():
-#     inner_mark_list = get_inner_mark_list()
-#     list(map(download_inner_mark_json, inner_mark_list))
-#
-
-
-# def download_thumbnail():
-#     page = wiki.pages["记忆烙痕图鉴"]
-#     images = page.images()
-#     for image in images:
-#         print(image.page_title, image.imageinfo["url"])
-#
-#
-# def download_inner_mark_json():
-#     page = wiki.pages["记忆烙痕/因果历然"]
-#     print(page.text())
-#
-#
-# download_thumbnail()
-
-
 def get_inner_mark_list():
     inner_marks = wiki.categories["记忆烙痕"]
-    return [inner_mark for inner_mark in inner_marks]
+    return [inner_mark.name for inner_mark in inner_marks]
+
+
+def download_inner_marks():
+    marker_list = get_inner_mark_list()
+    list(map(download_inner_mark_json, marker_list))
+
+
+download_inner_marks()
+# download_inner_mark_json("记忆烙痕/如在镜中")

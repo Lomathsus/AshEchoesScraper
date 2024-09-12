@@ -29,15 +29,22 @@ def translate_base_attribute(match, item, target):
     attribute_level = match.group(1).lower() if match.group(1) else None
 
     if not attribute_level:
-        attributes = value.split(",")
-        for attr in attributes:
-            attribute_pairs.append(attribute_dict[attr])
+        if value:
+            attributes = value.split(",")
+            for attr in attributes:
+                attribute_pairs.append(attribute_dict[attr])
+
     else:
         target.setdefault("base_attribute", {})
         target["base_attribute"].setdefault("level", {})
-        target["base_attribute"]["level"][attribute_level] = dict(
-            zip(attribute_pairs, value.split(","))
-        )
+
+        if attribute_pairs:
+            if value:
+                target["base_attribute"]["level"][attribute_level] = dict(
+                    zip(attribute_pairs, value.split(","))
+                )
+            else:
+                target["base_attribute"]["level"][attribute_level] = {}
 
 
 def translate_crossing_attribute(match, item, target):
