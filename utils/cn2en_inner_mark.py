@@ -127,7 +127,13 @@ def translate_inner_mark(origin_dict):
             translate_mark_wakeup(match, item, translated_dict)
 
         elif english_attribute := base_dict.get(key, key):
-            translated_dict[english_attribute] = value
+            valid_attributes = {"acquisition", "expression", "tag"}
+
+            if english_attribute in valid_attributes:
+                translated_dict[english_attribute] = value.split(",")
+            else:
+                translated_dict[english_attribute] = value
+
     return translated_dict
 
 

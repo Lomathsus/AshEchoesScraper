@@ -348,7 +348,12 @@ def translate_character(origin_dict):
             translate_seed_data(match, item, translated_dict)
 
         elif english_attribute := base_dict.get(key, key):
-            translated_dict[english_attribute] = value
+            valid_attributes = {"skill", "acquisition"}
+
+            if english_attribute in valid_attributes:
+                translated_dict[english_attribute] = value.split(",")
+            else:
+                translated_dict[english_attribute] = value
     return translated_dict
 
 

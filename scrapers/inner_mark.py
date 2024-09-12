@@ -8,12 +8,6 @@ wiki = Site("wiki.biligame.com/bjhl", path="/")
 
 DOWNLOAD_FILE_PATH = "../data/inner_marks"
 
-# dir_path = "../data/marks"
-# dir_name = os.path.dirname(dir_path)
-#
-# if not os.path.exists(dir_name):
-#     os.makedirs(dir_name, exist_ok=True)
-
 
 def download_inner_mark_json(inner_mark):
     page = wiki.pages[inner_mark]
@@ -43,10 +37,6 @@ def download_inner_mark_json(inner_mark):
 
     with open(file_path, "w", encoding="utf-8") as json_file:
         json.dump(new_dict, json_file, ensure_ascii=False, indent=4)
-    # inner_mark = wiki.pages["记忆烙痕/双重引力"]
-    # print(inner_mark.text())
-    # for image in inner_mark.images():
-    #     print(image.name)
 
 
 def get_inner_mark_list():
