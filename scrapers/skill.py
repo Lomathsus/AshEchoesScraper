@@ -12,7 +12,7 @@ DOWNLOAD_FILE_PATH = "../data/skills"
 
 def download_inner_mark_json(skill):
     page = wiki.pages[skill]
-
+    print(skill)
     lines = page.text().split("\n")
 
     dictionary = {}
@@ -40,4 +40,15 @@ def download_inner_mark_json(skill):
         json.dump(new_dict, json_file, ensure_ascii=False, indent=4)
 
 
-download_inner_mark_json("刻印技能/风刃侵蚀")
+def get_skill_list():
+    skills = wiki.categories["刻印技能"]
+    return [skill.name for skill in skills]
+
+
+def download_skills():
+    skill_list = get_skill_list()
+    list(map(download_inner_mark_json, skill_list))
+
+
+download_skills()
+# download_inner_mark_json("刻印技能/风刃侵蚀")
