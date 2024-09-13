@@ -2,6 +2,7 @@ import json
 import os
 
 from mwclient import Site
+from tqdm import tqdm
 
 from utils import translate_character
 
@@ -13,7 +14,7 @@ DOWNLOAD_FILE_PATH = "../data/characters"
 
 def download_character_json(character):
     page = wiki.pages[character]
-
+    print(character)
     lines = page.text().split("\n")
 
     dictionary = {}
@@ -26,7 +27,7 @@ def download_character_json(character):
 
     new_dict = translate_character(dictionary)
 
-    file_name = new_dict["cn_name"]
+    file_name = new_dict["name"]
 
     # 定义文件路径
     file_path = f"{DOWNLOAD_FILE_PATH}/{file_name}.json"
@@ -48,8 +49,9 @@ def get_character_list():
 
 def download_characters():
     character_list = get_character_list()
-    list(map(download_character_json, character_list))
+    for character in tqdm(character_list, disable=not len(character_list)):
+        download_character_json(character)  # 不需要返回值
 
 
-# download_characters()
-download_character_json("同调者/Sweeper-EX")
+download_characters()
+# download_character_json("同调者/Sweeper-EX")

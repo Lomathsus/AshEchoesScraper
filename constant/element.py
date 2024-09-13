@@ -1,5 +1,5 @@
 element_dict = {
-    "火": "fire",
+    "炎": "fire",
     "水": "water",
     "雷": "thunder",
     "霜": "ice",

@@ -1,7 +1,9 @@
 import re
+from constant import profession_dict, element_dict
+
 
 base_dict = {
-    "姓名": "cn_name",
+    "姓名": "name",
     "英文名": "en_name",
     "日文名": "jp_name",
     "职业": "profession",
@@ -16,7 +18,7 @@ base_dict = {
     "音乐名称": "music_name",
     "表情名称": "expression",
     "基础减伤": "damage_reduction",
-    "漫巡初始技能": "ash_crossing_skill",
+    "漫巡初始技能": "skill",
     "特性强化": "feature_enhancement",
 }
 
@@ -80,9 +82,9 @@ report_dict = {
     "身高": "height",
     "生日": "birthday",
     "所属势力": "faction",
-    "原生世界": "transmitted_from",
+    "原生世界": "teleported_from",
     "出生地": "birthplace",
-    "现居地": "current_residence",
+    "现居地": "address",
     "基础报告简介": "brief_report",
 }
 
@@ -103,7 +105,10 @@ def translate_attack(match, item, target):
     key, value = item
     attack_attribute = attack_dict[match.group()]
     target.setdefault("attack", {})
-    target["attack"][attack_attribute] = value
+
+    target["attack"][attack_attribute] = (
+        value if not attack_attribute == "tag" else value.split(",")
+    )
 
 
 # 移动属性
@@ -145,21 +150,23 @@ def translate_mastery_effect(match, item, target):
 def translate_skill(match, item, target):
     key, value = item
 
-    target.setdefault("skill", {})
+    target.setdefault("character_skill", {})
 
-    skill_type = "skill" if match.group(1) == "技能" else "seed_skill"
+    skill_type = "character_skill" if match.group(1) == "技能" else "seed_skill"
     skill_number = int(match.group(2)) if match.group(1) == "技能" else 0
     skill_code = "skill_seed" if skill_type == "seed_skill" else f"skill_{skill_number}"
 
-    target["skill"].setdefault(skill_code, {})
+    target["character_skill"].setdefault(skill_code, {})
 
     en_skill_attribute = skill_dict[match.group(3)]
     skill_level = match.group(4).lower() if match.group(4) else ""
 
     if en_skill_attribute != "level":
-        target["skill"][skill_code][en_skill_attribute] = value
+        target["character_skill"][skill_code][en_skill_attribute] = (
+            value if not en_skill_attribute == "tag" else value.split(",")
+        )
     else:
-        target["skill"][skill_code].setdefault("level", {})
+        target["character_skill"][skill_code].setdefault("level", {})
 
         # Split the value into "{{..}}" structures and other text
         values = re.split(r"(\{\{.*?\}\})", value)
@@ -197,8 +204,8 @@ def translate_skill(match, item, target):
                 description += v
 
         # Store the description with placeholders and "{{..}}" structures separately
-        target["skill"][skill_code]["description"] = description
-        target["skill"][skill_code]["level"][skill_level] = values_dict
+        target["character_skill"][skill_code]["description"] = description
+        target["character_skill"][skill_code]["level"][skill_level] = values_dict
 
 
 # 装备
@@ -254,24 +261,33 @@ def translate_feature(match, item, target):
         target["feature"]["description"][attribute_name] = value
 
 
+training_attribute_name = ""
+
+
 # 训练
 def translate_training(match, item, target):
     key, value = item
     step_num = f"step_{int(match.group(4))}"
     target.setdefault("training", {}).setdefault(step_num, {})
+    global training_attribute_name
 
     if match.group(5) == "属性":
-        global training_attribute_name
-        base_training_attribute_name = training_dict[value[2:]]
-        count = 1
-        training_attribute_name = base_training_attribute_name
-        while training_attribute_name in target["training"][step_num]:
-            training_attribute_name = base_training_attribute_name + "_" + str(count)
-            count += 1
-        target["training"][step_num].setdefault(training_attribute_name, "")
+        if value:
+            base_training_attribute_name = training_dict[value[2:]]
+            count = 1
+            training_attribute_name = base_training_attribute_name
+            while training_attribute_name in target["training"][step_num]:
+                training_attribute_name = (
+                    base_training_attribute_name + "_" + str(count)
+                )
+                count += 1
+            target["training"][step_num].setdefault(training_attribute_name, "")
     else:
-        # The training_attribute_name will be the one from the previous call
-        target["training"][step_num][training_attribute_name] = value
+        if value:
+            # The training_attribute_name will be the one from the previous call
+            target["training"][step_num][training_attribute_name] = value
+        else:
+            target["training"][step_num] = {}
 
 
 # 穹顶技能
@@ -348,10 +364,14 @@ def translate_character(origin_dict):
             translate_seed_data(match, item, translated_dict)
 
         elif english_attribute := base_dict.get(key, key):
-            valid_attributes = {"skill", "acquisition"}
+            valid_attributes = {"tag", "skill", "acquisition", "expression"}
 
             if english_attribute in valid_attributes:
                 translated_dict[english_attribute] = value.split(",")
+            elif english_attribute == "profession":
+                translated_dict[english_attribute] = profession_dict[value]
+            elif english_attribute == "element":
+                translated_dict[english_attribute] = element_dict[value]
             else:
                 translated_dict[english_attribute] = value
     return translated_dict
