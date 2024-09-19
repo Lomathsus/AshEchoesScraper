@@ -19,7 +19,7 @@ base_dict = {
     "表情名称": "expression",
     "基础减伤": "damage_reduction",
     "漫巡初始技能": "skill",
-    "特性强化": "feature_enhancement",
+    "特性强化": "character_enhancement",
 }
 
 attribute_dict = {
@@ -37,13 +37,13 @@ training_dict = {
     "专精": "mastery",
     "终端": "terminal",
     "攻击速度": "attack_speed",
-    "治愈力": "healing",
+    "治愈力": "heal",
     "格挡强度": "block",
     "减伤": "damage_reduction",
 }
 
 extra_attribute_dict = {
-    "治愈": "healing",
+    "治愈": "heal",
     "增伤": "damage",
     "格挡": "block",
 }
@@ -124,10 +124,8 @@ def translate_attribute(match, item, target):
     key, value = item
     level = match.group(1).lower()
     attribute = attribute_dict[match.group(2)]
-    target.setdefault("attribute_bonus", {}).setdefault(level, {}).setdefault(
-        attribute, {}
-    )
-    target["attribute_bonus"][level][attribute] = value
+    target.setdefault("stats_bonus", {}).setdefault(level, {}).setdefault(attribute, {})
+    target["stats_bonus"][level][attribute] = value
 
 
 # (位阶)作为队长时蚀刻初始属性-(属性)
@@ -135,8 +133,8 @@ def translate_captain_attribute(match, item, target):
     key, value = item
     level = match.group(1).lower()
     attribute = attribute_dict[match.group(3)]
-    target.setdefault("etching_attribute", {}).setdefault(level, {})
-    target["etching_attribute"][level][attribute] = value
+    target.setdefault("etching_stats", {}).setdefault(level, {})
+    target["etching_stats"][level][attribute] = value
 
 
 # 专精影响分支

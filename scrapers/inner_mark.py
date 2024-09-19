@@ -49,5 +49,5 @@ def download_inner_marks():
     list(map(download_inner_mark_json, marker_list))
 
 
-download_inner_marks()
-# download_inner_mark_json("记忆烙痕/如在镜中")
+# download_inner_marks()
+download_inner_mark_json("记忆烙痕/如在镜中")

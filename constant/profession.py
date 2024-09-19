@@ -8,5 +8,6 @@ profession_dict = {
     "铁御": "defender",
 }
 
+profession_type_dict = {"方块": "square", "三角": "triangle", "菱形": "diamond"}
 
 # psych etching 刻印

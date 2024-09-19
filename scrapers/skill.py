@@ -2,6 +2,7 @@ import json
 import os
 
 from mwclient import Site
+from tqdm import tqdm
 
 from utils import translate_skill
 
@@ -47,8 +48,9 @@ def get_skill_list():
 
 def download_skills():
     skill_list = get_skill_list()
-    list(map(download_inner_mark_json, skill_list))
+    for skill in tqdm(skill_list, disable=not len(skill_list)):
+        download_inner_mark_json(skill)
 
 
-download_skills()
-# download_inner_mark_json("刻印技能/风刃侵蚀")
+# download_skills()
+download_inner_mark_json("刻印技能/风刃侵蚀")
