@@ -50,4 +50,3 @@ def download_memory_traces():
 
 
 # download_memory_traces()
-download_memory_trace_json("记忆烙痕/馆中遗影")

@@ -52,5 +52,4 @@ def download_skills():
         download_memory_trace_json(skill)
 
 
-download_skills()
-# download_memory_trace_json("刻印技能/监督刻印·额外攻击")
+# download_skills()

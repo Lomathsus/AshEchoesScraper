@@ -7,8 +7,8 @@ base_dict = {
     "品质": "rarity",
     "烙痕属性": "type",
     "画师": "artist",
-    "准线技能": "mark_awaking_skill",
-    "技能": "engraving_skills",
+    "准线技能": "awaking_skill",
+    "技能": "nexus_skills",
     "实装日期": "implemented_at",
     "获取途径": "acquisitions",
     "烙痕介绍": "description",
@@ -89,13 +89,13 @@ def translate_illustration(match, item, target):
     target["illustration"][num] = value
 
 
-def translate_mark_awaking(match, item, target):
+def translate_trace_awaking(match, item, target):
     key, value = item
     awaking_stage = 2 if match.group(1) == "II" else 4
     awaking_option = 0 if match.group(2) == "A" else 1
-    target.setdefault("mark_awaking", {})
-    target["mark_awaking"].setdefault(awaking_stage, [[], []])
-    target["mark_awaking"][awaking_stage][awaking_option].append(value)
+    target.setdefault("trace_awaking", {})
+    target["trace_awaking"].setdefault(awaking_stage, [[], []])
+    target["trace_awaking"][awaking_stage][awaking_option].append(value)
 
 
 def translate_memory_trace(origin_dict):
@@ -114,10 +114,10 @@ def translate_memory_trace(origin_dict):
         elif match := re.match(r"^烙痕立绘(\d+)", key):
             translate_illustration(match, item, translated_dict)
         elif match := re.match(r"^(II|IV)-([AB])-(\d+)", key):
-            translate_mark_awaking(match, item, translated_dict)
+            translate_trace_awaking(match, item, translated_dict)
 
         elif english_attribute := base_dict.get(key, key):
-            valid_attributes = {"acquisitions", "engraving_skills"}
+            valid_attributes = {"acquisitions", "nexus_skills"}
 
             if english_attribute in valid_attributes:
                 translated_dict[english_attribute] = value.split(",")

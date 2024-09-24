@@ -85,7 +85,7 @@ def translate_combat_stats(match, item, target):
     target.setdefault("combat_stats", {})
 
     target["combat_stats"][attack_attribute] = (
-        value if not attack_attribute == "tag" else value.split(",")
+        value if not attack_attribute == "attack_tags" else value.split(",")
     )
 
 

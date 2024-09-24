@@ -43,7 +43,7 @@ element_dict = {
 elemental_reaction_dict = {"爆燃": "explosion"}
 
 enemy_dict = {
-    "一般单位": "general",
+    "一般单位": "common",
     "精英单位": "elite",
     "首领单位": "boss",
     "地面单位": "ground",
