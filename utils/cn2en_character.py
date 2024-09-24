@@ -1,6 +1,5 @@
 import re
-from constant import profession_dict, element_dict
-
+from constant.dict import profession_dict, element_dict, stat_dict, training_dict
 
 base_dict = {
     "姓名": "name",
@@ -9,66 +8,45 @@ base_dict = {
     "职业": "profession",
     "元素": "element",
     "星级": "rarity",
-    "TAG": "tag",
+    "TAG": "tags",
     "国配声优": "cn_cv",
     "日配声优": "jp_cv",
     "原型来源": "prototype",
     "实装日期": "implemented_at",
-    "获取途径": "acquisition",
+    "获取途径": "acquisitions",
     "音乐名称": "music_name",
-    "表情名称": "expression",
-    "基础减伤": "damage_reduction",
-    "漫巡初始技能": "skill",
+    "表情名称": "expressions",
+    "漫巡初始技能": "engraving_skills",
     "特性强化": "character_enhancement",
 }
 
-attribute_dict = {
-    "体质": "health",
-    "防御": "defence",
-    "攻击": "attack",
-    "专精": "mastery",
-    "终端": "terminal",
-}
 
-training_dict = {
-    "体质": "health",
-    "防御": "defence",
-    "攻击": "attack",
-    "专精": "mastery",
-    "终端": "terminal",
-    "攻击速度": "attack_speed",
-    "治愈力": "heal",
-    "格挡强度": "block",
-    "减伤": "damage_reduction",
-}
-
-extra_attribute_dict = {
-    "治愈": "heal",
-    "增伤": "damage",
+mastery_bonus_dict = {
+    "治愈": "healing",
+    "增伤": "damage_bonus",
     "格挡": "block",
 }
 
-movement_dict = {
-    "战术移动距离": "distance",
-    "战术移动指令冷却": "cooldown",
-}
 
-attack_dict = {
-    "暴击率": "critical",
-    "普通攻击TAG": "tag",
-    "射程": "range",
+combat_dict = {
+    "暴击率": "critical_rate",
+    "普通攻击TAG": "attack_tags",
+    "射程": "attack_range",
     "射程具体数值": "range_value",
     "攻击速度": "attack_speed",
-    "普通攻击描述": "description",
+    "普通攻击描述": "attack_description",
+    "基础减伤": "basic_damage_reduction",
+    "战术移动距离": "reposition_distance",
+    "战术移动指令冷却": "reposition_cooldown",
 }
 
 skill_dict = {
     "名称": "name",
     "类型": "type",
-    "TAG": "tag",
+    "TAG": "tags",
     "指令冷却类型": "cooldown_type",
     "指令冷却数值": "cooldown",
-    "每场次数": "cast_limit",
+    "每场次数": "availability",
     "施放条件": "cast_condition",
     "增益持续": "cast_duration",
     "-描述-": "level",
@@ -101,70 +79,62 @@ seed_data = {
 
 
 # 攻击属性
-def translate_attack(match, item, target):
+def translate_combat_stats(match, item, target):
     key, value = item
-    attack_attribute = attack_dict[match.group()]
-    target.setdefault("attack", {})
+    attack_attribute = combat_dict[match.group()]
+    target.setdefault("combat_stats", {})
 
-    target["attack"][attack_attribute] = (
+    target["combat_stats"][attack_attribute] = (
         value if not attack_attribute == "tag" else value.split(",")
     )
 
 
-# 移动属性
-def translate_movement(match, item, target):
-    key, value = item
-    movement_attribute = movement_dict[match.group()]
-    target.setdefault("movement", {})
-    target["movement"][movement_attribute] = value
-
-
 # (位阶)(属性)加成
-def translate_attribute(match, item, target):
+def translate_basic_stat(match, item, target):
     key, value = item
     level = match.group(1).lower()
-    attribute = attribute_dict[match.group(2)]
-    target.setdefault("stats_bonus", {}).setdefault(level, {}).setdefault(attribute, {})
-    target["stats_bonus"][level][attribute] = value
+    attribute = stat_dict[match.group(2)]
+    target.setdefault("basic_stats", {}).setdefault(level, {}).setdefault(attribute, {})
+    target["basic_stats"][level][attribute] = value
 
 
 # (位阶)作为队长时蚀刻初始属性-(属性)
 def translate_captain_attribute(match, item, target):
     key, value = item
     level = match.group(1).lower()
-    attribute = attribute_dict[match.group(3)]
-    target.setdefault("etching_stats", {}).setdefault(level, {})
-    target["etching_stats"][level][attribute] = value
+    attribute = stat_dict[match.group(3)]
+    target.setdefault("engraving_stats", {}).setdefault(level, {})
+    target["engraving_stats"][level][attribute] = value
 
 
 # 专精影响分支
-def translate_mastery_effect(match, item, target):
+def translate_mastery_bonus(match, item, target):
     key, value = item
-    attribute = extra_attribute_dict[match.group(2)]
-    target.setdefault("mastery_effect", {})[attribute] = value
+    attribute = mastery_bonus_dict[match.group(2)]
+    target.setdefault("mastery_bonus", {})[attribute] = value
 
 
 # 技能
-def translate_skill(match, item, target):
+def translate_combat_skill(match, item, target):
     key, value = item
 
-    target.setdefault("character_skill", {})
+    target.setdefault("combat_skill", {})
 
-    skill_type = "character_skill" if match.group(1) == "技能" else "seed_skill"
+    skill_type = "combat_skill" if match.group(1) == "技能" else "seed_skill"
     skill_number = int(match.group(2)) if match.group(1) == "技能" else 0
-    skill_code = "skill_seed" if skill_type == "seed_skill" else f"skill_{skill_number}"
+    skill_code = "seed" if skill_type == "seed_skill" else skill_number
 
-    target["character_skill"].setdefault(skill_code, {})
+    target["combat_skill"].setdefault(skill_code, {})
 
     en_skill_attribute = skill_dict[match.group(3)]
     skill_level = match.group(4).lower() if match.group(4) else ""
 
     if en_skill_attribute != "level":
-        target["character_skill"][skill_code][en_skill_attribute] = (
-            value if not en_skill_attribute == "tag" else value.split(",")
+        target["combat_skill"][skill_code][en_skill_attribute] = (
+            value if not en_skill_attribute == "tags" else value.split(",")
         )
     else:
-        target["character_skill"][skill_code].setdefault("level", {})
+        target["combat_skill"][skill_code].setdefault("level", {})
 
         # Split the value into "{{..}}" structures and other text
         values = re.split(r"(\{\{.*?\}\})", value)
@@ -202,8 +172,8 @@ def translate_skill(match, item, target):
                 description += v
 
         # Store the description with placeholders and "{{..}}" structures separately
-        target["character_skill"][skill_code]["description"] = description
-        target["character_skill"][skill_code]["level"][skill_level] = values_dict
+        target["combat_skill"][skill_code]["description"] = description
+        target["combat_skill"][skill_code]["level"][skill_level] = values_dict
 
 
 # 装备
@@ -225,13 +195,13 @@ def translate_collection(match, item, target):
     key, value = item
     attribute_name = int(match.group(2))
     target.setdefault("collection", {})
-    target["collection"][f"item_{attribute_name}"] = value
+    target["collection"][attribute_name] = value
 
 
 # 记忆档案
 def translate_document(match, item, target):
     key, value = item
-    target.setdefault("document", [])
+    documents = target.setdefault("documents", [])
     doc_type_dict = {"名称": "title", "内容": "content"}
     doc_sequence = int(match.group(1)) - 1
     doc_type = doc_type_dict[match.group(2)]
@@ -240,23 +210,25 @@ def translate_document(match, item, target):
         return
     else:
         try:
-            target_item = target["document"][doc_sequence]
+            target_item = documents[doc_sequence]
         except IndexError:
             # 插入一个新的字典，如果doc_sequence超出了列表的长度
-            target["document"].insert(doc_sequence, {doc_type: value})
+            documents.insert(doc_sequence, {doc_type: value})
         else:
             target_item.update({doc_type: value})
 
 
 # 特性
-def translate_feature(match, item, target):
+def translate_trait(match, item, target):
     key, value = item
-    target.setdefault("feature", {}).setdefault("description", {})
+    trait = target.setdefault("trait", {})
+    trait.setdefault("description", {})
+
     if match.group(2) == "名称":
-        target["feature"]["name"] = value
+        trait["name"] = value
     else:
         attribute_name = match.group(3).lower()
-        target["feature"]["description"][attribute_name] = value
+        trait["description"][attribute_name] = value
 
 
 training_attribute_name = ""
@@ -265,7 +237,7 @@ training_attribute_name = ""
 # 训练
 def translate_training(match, item, target):
     key, value = item
-    step_num = f"step_{int(match.group(4))}"
+    step_num = f"phase_{int(match.group(4))}"
     target.setdefault("training", {}).setdefault(step_num, {})
     global training_attribute_name
 
@@ -289,21 +261,21 @@ def translate_training(match, item, target):
 
 
 # 穹顶技能
-def translate_dome(match, item, target):
+def translate_dome_skill(match, item, target):
     key, value = item
-    target.setdefault("dome", {})
+    dom_skill = target.setdefault("dome_skill", {})
     if not match.group(3):
-        target["dome"].setdefault("skill_1", {})
+        dom_skill.setdefault("1", {})
         if match.group(4) == "名称":
-            target["dome"]["skill_1"]["name"] = value
+            dom_skill["1"]["name"] = value
         else:
-            target["dome"]["skill_1"]["description"] = value
+            dom_skill["1"]["description"] = value
     else:
-        target["dome"].setdefault(f"skill_{match.group(3)}", {})
+        dom_skill.setdefault(match.group(3), {})
         if match.group(4) == "名称":
-            target["dome"][f"skill_{match.group(3)}"]["name"] = value
+            dom_skill[match.group(3)]["name"] = value
         else:
-            target["dome"][f"skill_{match.group(3)}"]["description"] = value
+            dom_skill[match.group(3)]["description"] = value
 
 
 # 报告
@@ -325,25 +297,22 @@ def translate_seed_data(match, item, target):
 def translate_character(origin_dict):
     translated_dict = {}
     skill_regs = "|".join(re.escape(key) for key in skill_dict)
-    attack_regs = "|".join(r"\b" + re.escape(key) + r"\b" for key in attack_dict)
-    movement_regs = "|".join(r"\b" + re.escape(key) + r"\b" for key in movement_dict)
+    combat_regs = "|".join(r"\b" + re.escape(key) + r"\b" for key in combat_dict)
     report_regs = "|".join(r"\b" + re.escape(key) + r"\b" for key in report_dict)
     seed_data_regs = "|".join(r"\b" + re.escape(key) + r"\b" for key in seed_data)
 
     for key, value in origin_dict.items():
         item = [key, value]
         if match := re.match(r"(S\d+)(体质|专精|攻击)(加成)", key):
-            translate_attribute(match, item, translated_dict)
-        elif match := re.match(attack_regs, key):
-            translate_attack(match, item, translated_dict)
-        elif match := re.match(movement_regs, key):
-            translate_movement(match, item, translated_dict)
+            translate_basic_stat(match, item, translated_dict)
+        elif match := re.match(combat_regs, key):
+            translate_combat_stats(match, item, translated_dict)
         elif match := re.match(r"(S\d+)(作为队长时蚀刻初始属性-)(.+)", key):
             translate_captain_attribute(match, item, translated_dict)
         elif match := re.match(r"(技能|异核)(\d+)?(" + skill_regs + ")(.*)", key):
-            translate_skill(match, item, translated_dict)
+            translate_combat_skill(match, item, translated_dict)
         elif match := re.match(r"(专精影响分支-)(.+)", key):
-            translate_mastery_effect(match, item, translated_dict)
+            translate_mastery_bonus(match, item, translated_dict)
         elif match := re.match(r"记忆档案(\d+)-(内容|名称)", key):
             translate_document(match, item, translated_dict)
         elif match := re.match(r"(装备-)(.+)", key):
@@ -351,18 +320,23 @@ def translate_character(origin_dict):
         elif match := re.match(r"(记忆镌相)(.+)", key):
             translate_collection(match, item, translated_dict)
         elif match := re.match(r"(特性)(名称|-描述)(.+)?", key):
-            translate_feature(match, item, translated_dict)
+            translate_trait(match, item, translated_dict)
         elif match := re.match(r"(项目)(\d+)(阶段)(\d+)(属性|数值)", key):
             translate_training(match, item, translated_dict)
         elif match := re.match(r"(穹顶)(技能)(\d+)?(名称|描述)", key):
-            translate_dome(match, item, translated_dict)
+            translate_dome_skill(match, item, translated_dict)
         elif match := re.match(report_regs, key):
             translate_report(match, item, translated_dict)
         elif match := re.match(seed_data_regs, key):
             translate_seed_data(match, item, translated_dict)
 
         elif english_attribute := base_dict.get(key, key):
-            valid_attributes = {"tag", "skill", "acquisition", "expression"}
+            valid_attributes = {
+                "tags",
+                "engraving_skills",
+                "acquisitions",
+                "expressions",
+            }
 
             if english_attribute in valid_attributes:
                 translated_dict[english_attribute] = value.split(",")

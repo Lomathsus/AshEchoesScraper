@@ -1,5 +1,6 @@
 import json
 import os
+from typing import TextIO
 
 from mwclient import Site
 from tqdm import tqdm
@@ -53,5 +54,5 @@ def download_characters():
         download_character_json(character)  # 不需要返回值
 
 
-download_characters()
-# download_character_json("同调者/Sweeper-EX")
+# download_characters()
+download_character_json("同调者/龙晴")

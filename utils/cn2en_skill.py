@@ -1,30 +1,29 @@
-from constant import (
+from constant.dict import (
     profession_dict,
-    profession_type_dict,
+    profession_category_dict,
     element_dict,
     enemy_dict,
-    damage_increase_dict,
-    stats_increase_dict,
 )
+from constant.buff import damage_increase_dict, stats_increase_dict
 
 base_dict = {
     "技能名称": "name",
     "稀有度": "rarity",
-    "职业": "profession",
-    "类型": "profession_type",
-    "技能词条": "skill_tag",
+    "职业": "professions",
+    "类型": "profession_types",
+    "技能词条": "skill_tags",
     "技能描述": "skill_description",
     "技能图标": "skill_icon",
     "来源": "source",
     "点亮所需技能点": "point_requirement",
-    "元素": "element",
-    "属性": "skill_attribute",
-    "敌人类型": "enemy_type",
-    "生效模式": "activation_mode",
-    "增伤乘区": "damage_increase",
+    "元素": "elements",
+    "属性": "skill_stats",
+    "敌人类型": "enemy_types",
+    "生效模式": "activation_modes",
+    "增伤乘区": "damage_increases",
     "减伤乘区": "damage_reduction",
-    "目标减益乘区": "target_debuff",
-    "属性乘区": "stat_increase",
+    "目标减益乘区": "target_debuffs",
+    "属性乘区": "stats_increases",
     "特殊机制": "special_mechanism",
 }
 
@@ -35,41 +34,49 @@ def translate_skill(origin_dict):
     for key, value in origin_dict.items():
         english_attribute = base_dict.get(key, key)
 
-        if english_attribute == "profession":
+        if english_attribute == "professions":
             parts = value.split("、")
             translated_dict[english_attribute] = (
                 [profession_dict[part] for part in parts]
                 if not parts[0] == "所有同调者"
                 else "all"
             )
-        elif english_attribute == "profession_type":
+        elif english_attribute == "profession_types":
             parts = value.split("、")
             translated_dict[english_attribute] = [
-                profession_type_dict[part] for part in parts
+                profession_category_dict[part] for part in parts
             ]
-        elif english_attribute == "element":
+        elif english_attribute == "elements":
             parts = value.split(",")
             translated_dict[english_attribute] = (
                 [element_dict[part] for part in parts] if not parts[0] == "" else []
             )
         elif english_attribute == "point_requirement":
+
+            def is_convertible_to_int(val):
+                try:
+                    int(val)
+                    return True
+                except (ValueError, TypeError):
+                    return False
+
             parts = value.split("/")
             translated_dict[english_attribute] = (
-                [int(part) for part in parts] if not parts[0] == "" else []
+                [int(part) for part in parts] if is_convertible_to_int(parts[0]) else []
             )
-        elif english_attribute == "enemy_type":
+        elif english_attribute == "enemy_types":
             parts = value.split(",")
             translated_dict[english_attribute] = (
                 [enemy_dict[part] for part in parts] if not parts[0] == "" else []
             )
-        elif english_attribute == "damage_increase":
+        elif english_attribute == "damage_increases":
             parts = value.split(",")
             translated_dict[english_attribute] = (
                 [damage_increase_dict[part] for part in parts]
                 if not parts[0] == ""
                 else []
             )
-        elif english_attribute == "stat_increase":
+        elif english_attribute == "stats_increases":
             parts = value.split(",")
             translated_dict[english_attribute] = (
                 [stats_increase_dict[part] for part in parts]
@@ -77,10 +84,10 @@ def translate_skill(origin_dict):
                 else []
             )
         elif english_attribute in [
-            "skill_tag",
-            "activation_mode",
+            "skill_tags",
+            "activation_modes",
             "special_mechanism",
-            "target_debuff",
+            "target_debuffs",
         ]:
             parts = value.split(",")
             translated_dict[english_attribute] = (

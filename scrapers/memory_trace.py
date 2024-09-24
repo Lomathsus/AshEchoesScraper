@@ -2,16 +2,16 @@ import json
 import os
 
 from mwclient import Site
-from utils import translate_inner_mark
+from utils import translate_memory_trace
 
 wiki = Site("wiki.biligame.com/bjhl", path="/")
 
-DOWNLOAD_FILE_PATH = "../data/inner_marks"
+DOWNLOAD_FILE_PATH = "../data/memory_traces"
 
 
-def download_inner_mark_json(inner_mark):
-    page = wiki.pages[inner_mark]
-    print(inner_mark)
+def download_memory_trace_json(memory_trace):
+    page = wiki.pages[memory_trace]
+    print(memory_trace)
     lines = page.text().split("\n")
 
     dictionary = {}
@@ -22,7 +22,7 @@ def download_inner_mark_json(inner_mark):
             key, value = parts[0], parts[1] if len(parts) > 1 else ""
             dictionary[key] = value.strip()
 
-    new_dict = translate_inner_mark(dictionary)
+    new_dict = translate_memory_trace(dictionary)
 
     file_name = new_dict["name"]
 
@@ -39,15 +39,15 @@ def download_inner_mark_json(inner_mark):
         json.dump(new_dict, json_file, ensure_ascii=False, indent=4)
 
 
-def get_inner_mark_list():
-    inner_marks = wiki.categories["记忆烙痕"]
-    return [inner_mark.name for inner_mark in inner_marks]
+def get_memory_trace_list():
+    memory_traces = wiki.categories["记忆烙痕"]
+    return [memory_trace.name for memory_trace in memory_traces]
 
 
-def download_inner_marks():
-    marker_list = get_inner_mark_list()
-    list(map(download_inner_mark_json, marker_list))
+def download_memory_traces():
+    marker_list = get_memory_trace_list()
+    list(map(download_memory_trace_json, marker_list))
 
 
-# download_inner_marks()
-download_inner_mark_json("记忆烙痕/如在镜中")
+# download_memory_traces()
+download_memory_trace_json("记忆烙痕/馆中遗影")
