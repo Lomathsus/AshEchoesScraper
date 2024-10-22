@@ -14,9 +14,8 @@ base_dict = {
     "原型来源": "prototype",
     "实装日期": "implemented_at",
     "获取途径": "acquisitions",
-    "音乐名称": "music_name",
     "表情名称": "expressions",
-    "漫巡初始技能": "engraving_skills",
+    "漫巡初始技能": "skill",
     "特性强化": "character_enhancement",
 }
 
@@ -333,7 +332,7 @@ def translate_character(origin_dict):
         elif english_attribute := base_dict.get(key, key):
             valid_attributes = {
                 "tags",
-                "engraving_skills",
+                "skill",
                 "acquisitions",
                 "expressions",
             }

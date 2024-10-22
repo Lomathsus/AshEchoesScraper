@@ -25,6 +25,7 @@ def download_character_json(character):
             parts = line[1:].split("=", 1)  # specify max split
             key, value = parts[0], parts[1] if len(parts) > 1 else ""
             dictionary[key] = value.strip()
+            print(key, value.strip())
 
     new_dict = translate_character(dictionary)
 
@@ -55,4 +56,4 @@ def download_characters():
 
 
 # download_characters()
-# download_character_json("同调者/龙晴")
+download_character_json("同调者/伊琅相思")

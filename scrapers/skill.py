@@ -11,7 +11,7 @@ wiki = Site("wiki.biligame.com/bjhl", path="/")
 DOWNLOAD_FILE_PATH = "../data/skills"
 
 
-def download_memory_trace_json(skill):
+def download_skill_json(skill):
     page = wiki.pages[skill]
     print(skill)
     lines = page.text().split("\n")
@@ -49,7 +49,8 @@ def get_skill_list():
 def download_skills():
     skill_list = get_skill_list()
     for skill in tqdm(skill_list, disable=not len(skill_list)):
-        download_memory_trace_json(skill)
+        download_skill_json(skill)
 
 
-# download_skills()
+download_skills()
+# download_skill_json("刻印技能/蓄势待发")

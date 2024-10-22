@@ -33,7 +33,7 @@ rang_dict = {"近": "melee"}
 element_dict = {
     "炎": "fire",
     "水": "water",
-    "雷": "lighting",
+    "雷": "lightning",
     "霜": "ice",
     "风": "wind",
     "蚀": "corrosion",
@@ -49,6 +49,7 @@ enemy_dict = {
     "地面单位": "ground",
     "空中单位": "air",
     "原生单位": "native",
+    "幻象单位": "illusion",
     "异种单位": "alien",
     "人形单位": "humanoid",
     "机械单位": "mechanical",

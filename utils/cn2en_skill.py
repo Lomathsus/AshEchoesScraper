@@ -43,9 +43,10 @@ def translate_skill(origin_dict):
             )
         elif english_attribute == "profession_types":
             parts = value.split("、")
-            translated_dict[english_attribute] = [
-                profession_category_dict[part] for part in parts
-            ]
+            profession_types = [profession_category_dict[part] for part in parts]
+            translated_dict[english_attribute] = (
+                profession_types if len(profession_types) != 3 else "all"
+            )
         elif english_attribute == "elements":
             parts = value.split(",")
             translated_dict[english_attribute] = (

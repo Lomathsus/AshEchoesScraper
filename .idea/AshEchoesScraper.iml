@@ -32,7 +32,7 @@
       <excludeFolder url="file://$MODULE_DIR$/data/images/雪中春信" />
       <excludeFolder url="file://$MODULE_DIR$/data/images/首页轮播图" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.12 (AshEchoesScraper)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
